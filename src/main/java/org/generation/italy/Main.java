@@ -44,22 +44,22 @@ public class Main {
 			}
 			System.out.println("Choose a country id: ");
 			int countryId = scan.nextInt();
-			System.out.print("Languages:");
-			int numMaxLang = 0;
 
-			String maxLanguages = "select count(cl.language_id) as countLanguage, cl.country_id \r\n"
-					+ "from country_languages cl \r\n" + "group by cl.country_id \r\n"
-					+ "order by countLanguage desc \r\n" + "limit 1;\r\n";
-			// ricerca del numero massimo di lingue presenti in uno stato
-			try (PreparedStatement ps = con.prepareStatement(maxLanguages)) {
-				try (ResultSet rsMaxLang = ps.executeQuery()) {
-					while (rsMaxLang.next()) {
-						numMaxLang = rsMaxLang.getInt("countLanguage");
-					}
+//			int numMaxLang = 0;
 
-				}
-
-			}
+//			String maxLanguages = "select count(cl.language_id) as countLanguage, cl.country_id \r\n"
+//					+ "from country_languages cl \r\n" + "group by cl.country_id \r\n"
+//					+ "order by countLanguage desc \r\n" + "limit 1;\r\n";
+//			// ricerca del numero massimo di lingue presenti in uno stato
+//			try (PreparedStatement ps = con.prepareStatement(maxLanguages)) {
+//				try (ResultSet rsMaxLang = ps.executeQuery()) {
+//					while (rsMaxLang.next()) {
+//						numMaxLang = rsMaxLang.getInt("countLanguage");
+//					}
+//
+//				}
+//
+//			}
 
 			// elenco lingue parlate
 			String searchId = "select *\r\n" + "from countries c \r\n"
@@ -69,26 +69,31 @@ public class Main {
 			try (PreparedStatement ps = con.prepareStatement(searchId)) {
 				ps.setInt(1, countryId);
 				try (ResultSet rsLang = ps.executeQuery()) {
-					int i = 0;
-					String[] languages = new String[numMaxLang];
-					int languagesCount = 0;
+
+					System.out.print("Languages: ");
 					while (rsLang.next()) {
-						languages[i] = rsLang.getString("l.language");
-						i++;
-						languagesCount++;
-//						System.out.print(rsLang.getString("l.language")+ ", ");
-
-					}
-					for (int j = 0; j < languagesCount; j++) {
-						if (j < languagesCount - 1) {
-							System.out.print(languages[j] + ", ");
-						} else {
-							System.out.print(languages[j] + ".\n");
+						if (rsLang.isLast()) {
+							System.out.println(rsLang.getString("l.language") + ".");
+						}else {
+							System.out.print(rsLang.getString("l.language") + ", ");
 						}
+					
 
 					}
+//					String languagesFormatted = languages.substring(0, languages.length() - 2) + ".";
+//					System.out.println(languagesFormatted);
+//					
+//					for (int j = 0; j < languagesCount; j++) {
+//						if (j < languagesCount - 1) {
+//							System.out.print(languages[j] + ", ");
+//						} else {
+//							System.out.print(languages[j] + ".\n");
+//						}
+//
+//					}
+					
 				}
-
+               
 			}
 			// elenco statistiche
 			String sqlStats = "select *\r\n" + "from countries c \r\n"
