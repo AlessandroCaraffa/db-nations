@@ -32,12 +32,54 @@ public class Main {
 				ps.setString(1, search);
 				
 				try(ResultSet rs = ps.executeQuery()){
+					String id = "id";
+					String cName = "country";
+					String rName = "region";
+					String conName = "continent";
+					System.out.format("%3s%15s%25s%15s%n",id , cName , rName, conName);
 					
 					while(rs.next()) {
-						System.out.println(rs.getInt("c.country_id")+ "\t\t" + rs.getString("c.name")+ "\t\t"+ rs.getString("r.name")+ "\t\t" +rs.getString("c2.name"));
+						System.out.format("%3s%15s%25s%15s%n",rs.getInt("c.country_id"), rs.getString("c.name"), rs.getString("r.name"),rs.getString("c2.name"));
 					}
 				}
 				}
+			System.out.println("Choose a country id: ");
+			int countryId = scan.nextInt();
+			System.out.print("Languages:");
+			
+			String searchId = "select *\r\n"
+					+ "from countries c \r\n"
+					+ "join country_languages cl ON c.country_id = cl.country_id \r\n"
+					+ "join languages l on cl.language_id = l.language_id \r\n"
+					+ "where c.country_id = ?;";
+			try(PreparedStatement ps = con.prepareStatement(searchId)){
+				ps.setInt(1, countryId);
+				try(ResultSet rsLang = ps.executeQuery()){
+					int i = 0;
+					String[] languages = new String[12];
+					int languagesCount = 0;
+					while(rsLang.next()) {
+						languages[i] = rsLang.getString("l.language");
+						i++;
+						languagesCount ++;
+//						System.out.print(rsLang.getString("l.language")+ ", ");
+						
+					}
+					for(int j= 0 ; j < languagesCount ;j++) {
+						if (j<languagesCount - 1) {
+							System.out.print(languages[j] + ", ");
+						}else {
+							System.out.print(languages[j] + ".");
+						}
+						
+					}
+				}
+				
+				
+				
+				
+				
+			}
 
 		
 
